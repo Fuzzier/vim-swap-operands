@@ -61,7 +61,7 @@ function! swap_operands#text(mode) range
             \'\([^[:space:]].\{-}\)' .
             \ '\([[:space:]]*\%('    . operators . '\)[[:space:]]*\)' .
             \'\([^[:space:]].\{-}\)' .
-            \'\ze[[:space:]]*$/\3\2\1/e'
+            \'\ze[;[:space:]]*$/\3\2\1/e'
       else
          if col("'<") < col("'>")
 
@@ -89,7 +89,7 @@ function! swap_operands#text(mode) range
             \'\([^[:space:]].\{-}\)' .
             \ '\([[:space:]]*\%('    . operators . '\)[[:space:]]*\)' .
             \'\([^[:space:]].\{-}\)' .
-            \'\ze[[:space:]]*\%'     . col_end   . 'c/\3\2\1/e'
+            \'\ze[;[:space:]]*\%'     . col_end   . 'c/\3\2\1/e'
       endif
 
    " Swap Words
