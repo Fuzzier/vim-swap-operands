@@ -1,4 +1,4 @@
-function! swap#text(mode) range
+function! swap_operands#text(mode) range
 
    let last_search = histget('search', -1)
 

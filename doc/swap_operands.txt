@@ -14,6 +14,9 @@
 Latest version at:
 https://github.com/kurkale6ka/vim-swap
 
+Forked at:
+https://github.com/fuzzier/vim-swap-operands
+
 
 
 1. Visual mode                                                      |swap-visual|
@@ -29,7 +32,7 @@ https://github.com/kurkale6ka/vim-swap
 The functionality mentioned here is a plugin, see |add-plugin|. You can avoid
 loading this plugin by setting the swap global variable in your |vimrc| file:
 >
-    :let g:loaded_swap = 1
+    :let g:loaded_swap_operands = 1
 <
 ================================================================================
 1. Visual mode                                                      *swap-visual*

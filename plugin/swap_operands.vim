@@ -10,7 +10,7 @@
 " Todo: re-position the cursor using cursor()
 "       Position of cursor in the visual area?
 
-if exists('g:loaded_swap') || &compatible || v:version < 700
+if exists('g:loaded_swap_operands') || &compatible || v:version < 700
 
    if &compatible && &verbose
       echo "Swap is not designed to work in compatible mode."
@@ -21,15 +21,15 @@ if exists('g:loaded_swap') || &compatible || v:version < 700
    finish
 endif
 
-let g:loaded_swap = 1
+let g:loaded_swap_operands = 1
 
 let s:savecpo = &cpoptions
 set cpoptions&vim
 
-xmap <silent> <plug>SwapSwapOperands      :     call swap#text('v' )<cr>
-xmap <silent> <plug>SwapSwapPivotOperands :     call swap#text('vi')<cr>
-nmap <silent> <plug>SwapSwapWithR_WORD    :<c-u>call swap#text('nr')<cr>
-nmap <silent> <plug>SwapSwapWithL_WORD    :<c-u>call swap#text('nl')<cr>
+xmap <silent> <plug>SwapSwapOperands      :     call swap_operands#text('v' )<cr>
+xmap <silent> <plug>SwapSwapPivotOperands :     call swap_operands#text('vi')<cr>
+nmap <silent> <plug>SwapSwapWithR_WORD    :<c-u>call swap_operands#text('nr')<cr>
+nmap <silent> <plug>SwapSwapWithL_WORD    :<c-u>call swap_operands#text('nl')<cr>
 
 function! s:map(mode, lhs, rhs)
 
