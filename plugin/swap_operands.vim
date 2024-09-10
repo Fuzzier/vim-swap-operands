@@ -31,18 +31,24 @@ xmap <silent> <plug>SwapSwapPivotOperands :     call swap_operands#text('vi')<cr
 nmap <silent> <plug>SwapSwapWithR_WORD    :<c-u>call swap_operands#text('nr')<cr>
 nmap <silent> <plug>SwapSwapWithL_WORD    :<c-u>call swap_operands#text('nl')<cr>
 
-function! s:map(mode, lhs, rhs)
+""" default keymappings
+" If g:swap_operands_no_default_key_mappings has been defined, then quit immediately.
+if !exists('g:swap_operands_no_default_key_mappings')
 
-    if !hasmapto(a:rhs, a:mode)
-        execute a:mode . 'map ' . a:lhs . ' ' . a:rhs
-    endif
+    function! s:map(mode, lhs, rhs)
 
-endfunction
+        if !hasmapto(a:rhs, a:mode)
+            execute a:mode . 'map ' . a:lhs . ' ' . a:rhs
+        endif
 
-call s:map('x', '<leader>x', '<plug>SwapSwapOperands')
-call s:map('x', '<leader>cx', '<plug>SwapSwapPivotOperands')
-call s:map('n', '<leader>x', '<plug>SwapSwapWithR_WORD')
-call s:map('n', '<leader>X', '<plug>SwapSwapWithL_WORD')
+    endfunction
+
+    call s:map('x', '<leader>x', '<plug>SwapSwapOperands')
+    call s:map('x', '<leader>cx', '<plug>SwapSwapPivotOperands')
+    call s:map('n', '<leader>x', '<plug>SwapSwapWithR_WORD')
+    call s:map('n', '<leader>X', '<plug>SwapSwapWithL_WORD')
+
+endif
 
 let &cpoptions = s:savecpo
 unlet s:savecpo
