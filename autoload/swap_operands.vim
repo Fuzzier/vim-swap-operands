@@ -51,16 +51,60 @@ function! swap_operands#text(mode) range
          let operators = escape(operators, '*/~.^$')
       endif
 
+      " Obtain selected string
+      let l:start = getpos("'<")
+      let l:end   = getpos("'>")
+      let l:lines = getline(l:start[1], l:end[1])
+
+      if len(l:lines) == 1
+          let l:lines[0] = l:lines[0][l:start[2] - 1 : l:end[2] - 1]
+      else
+          let l:lines[0]  = l:lines[0][l:start[2] - 1 :]
+          let l:lines[-1] = l:lines[-1][: l:end[2] - 1]
+      endif
+      let l:selection = join(l:lines, '')
+
+      " Search for the first operator
+      let operator = matchstr(l:selection, '\(' . operators . '\)')
+      if empty(operator)
+          return
+      endif
+
+      " Change direction for oprators
+      let reverse_op = v:false
+      let operator_after = operator
+      if operator !~ '<>\|<=>\|<<\|>>\|->'
+          if operator =~ '<'
+              let reverse_op = v:true
+              let operator_after = substitute(operator, '<', '>', 'g')
+          elseif operator =~ '>'
+              let reverse_op = v:true
+              let operator_after = substitute(operator, '>', '<', 'g')
+          endif
+      endif
+
       " Whole lines
       if 'V' ==# visualmode() ||
-         \ 'v' ==# visualmode() && line("'<") != line("'>")
+       \ 'v' ==# visualmode() && line("'<") != line("'>")
 
+         if reverse_op
+             " Replace the operator
+             execute 'silent ' . a:firstline . ',' . a:lastline .
+                \'substitute/'       .
+                \'^[[:space:]]*'     .
+                \'[^[:space:]].\{-}' .
+                \ '[[:space:]]*\zs'  . operator . '\ze[[:space:]]*' .
+                \'[^[:space:]].\{-}' .
+                \'[;[:space:]]*$/'   . operator_after . '/e'
+         endif
+
+         " Swap the operands
          execute 'silent ' . a:firstline . ',' . a:lastline .
-            \'substitute/'           .
-            \  '^[[:space:]]*\zs'    .
-            \'\([^[:space:]].\{-}\)' .
-            \ '\([[:space:]]*\%('    . operators . '\)[[:space:]]*\)' .
-            \'\([^[:space:]].\{-}\)' .
+            \ 'substitute/'           .
+            \   '^[[:space:]]*\zs'    .
+            \ '\([^[:space:]].\{-}\)' .
+            \  '\([[:space:]]*\%('    . operator_after . '\)[[:space:]]*\)' .
+            \ '\([^[:space:]].\{-}\)' .
             \'\ze[;[:space:]]*$/\3\2\1/e'
       else
          if col("'<") < col("'>")
@@ -84,12 +128,23 @@ function! swap_operands#text(mode) range
             endif
          endif
 
+         if reverse_op
+             " Replace the operator
+             execute 'silent ' . a:firstline . ',' . a:lastline .
+                \'substitute/\%'     . col_start . 'c[[:space:]]*' .
+                \'[^[:space:]].\{-}' .
+                \ '[[:space:]]*\zs'  . operator  . '\ze[[:space:]]*' .
+                \'[^[:space:]].\{-}' .
+                \'[;[:space:]]*\%'   . col_end   . 'c/' . operator_after . '/e'
+         endif
+
+         " Swap the operands
          execute 'silent ' . a:firstline . ',' . a:lastline .
-            \'substitute/\%'         . col_start . 'c[[:space:]]*\zs' .
+            \'substitute/\%'         . col_start      . 'c[[:space:]]*\zs' .
             \'\([^[:space:]].\{-}\)' .
-            \ '\([[:space:]]*\%('    . operators . '\)[[:space:]]*\)' .
+            \ '\([[:space:]]*\%('    . operator_after . '\)[[:space:]]*\)' .
             \'\([^[:space:]].\{-}\)' .
-            \'\ze[;[:space:]]*\%'     . col_end   . 'c/\3\2\1/e'
+            \'\ze[;[:space:]]*\%'    . col_end        . 'c/\3\2\1/e'
       endif
 
    " Swap Words
